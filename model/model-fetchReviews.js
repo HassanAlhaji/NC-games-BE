@@ -1,13 +1,8 @@
 const db = require("../db/connection");
 
 exports.fetchReviews = () => {
-    return db.query(`SELECT * FROM reviews;`).then(result => {
-        const newArray = result.rows.map((review)=>{
-            return db.query(`SELECT * FROM comments WHERE review_id = ${review.review_id}`).then(result =>{
-                review.commet_count = result.rowCount
-                return review
-            })
-        })
-        return Promise.all(newArray)
+    return db.query(`SELECT reviews.owner, reviews.title, reviews.review_id, reviews.category, reviews.review_img_url, reviews.created_at, reviews.votes, reviews.designer, CAST(COUNT(comments.review_id) AS INT) AS comment_count FROM reviews
+    LEFT JOIN comments ON reviews.review_id = comments.review_id GROUP BY reviews.review_id ORDER BY comment_count DESC;`).then(result => {
+        return result.rows;
     })
 }
