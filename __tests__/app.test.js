@@ -57,10 +57,30 @@ describe("GET/api/categories", () => {
         });
     });
   })
+  describe("GET /api/reviews/:review_id", () => {
+    test("should return a review object with the specified properties", () => {
+      return request(app)
+        .get("/api/reviews/2")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body).toEqual({
+            review_id: 2,
+            title: expect.any(String),
+            review_body: expect.any(String),
+            designer: expect.any(String),
+            review_img_url: expect.any(String),
+            votes: expect.any(Number),
+            category: expect.any(String),
+            owner: "philippaclaire9",
+            created_at: expect.any(String),
+          });
+        });
+    });
+  })
   describe("error handling", ()=>{
     test("GET un existed path should return 404 not found",()=>{
       return request(app).get("/api/cats").expect(404).then((res)=>{
-        expect(res.body.msg).toBe("path not found")
+        expect(res.body.msg).toBe("path NOT found")
       })
     })
   })

@@ -6,3 +6,14 @@ exports.fetchReviews = () => {
         return result.rows;
     })
 }
+exports.fetchReviewById = (reviewId) => {
+    if(isNaN(reviewId)){
+        return Promise.reject({
+            msg:"bad request",
+            status:400
+        })
+    }
+return db.query(`SELECT * FROM  reviews WHERE review_id = $1;`, [reviewId]).then(result => {
+    return result.rows[0]
+})
+}
