@@ -58,21 +58,26 @@ describe("GET/api/categories", () => {
     });
   })
   describe("GET /api/reviews/:review_id", () => {
+    test("status :400 return bad request",()=>{
+      return request(app).get("/api/reviews/cats").expect(400).then((res)=>{
+        expect(res.body.msg).toBe("bad request")
+      })
+    })
     test("should return a review object with the specified properties", () => {
       return request(app)
         .get("/api/reviews/2")
         .expect(200)
         .then(({ body }) => {
-          expect(body).toEqual({
+          expect(body).toMatchObject({
             review_id: 2,
-            title: expect.any(String),
-            review_body: expect.any(String),
-            designer: expect.any(String),
-            review_img_url: expect.any(String),
-            votes: expect.any(Number),
-            category: expect.any(String),
+            title: "Jenga",
+            category: "dexterity",
+            designer: "Leslie Scott",
             owner: "philippaclaire9",
-            created_at: expect.any(String),
+            review_body: "Fiddly fun for all the family",
+            review_img_url: "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+            created_at: "2021-01-18T10:01:41.251Z",
+            votes: 5
           });
         });
     });
