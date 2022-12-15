@@ -2,7 +2,8 @@ const request = require("supertest");
 const db = require("../db/connection");
 const app = require("../app.js");
 const testData = require('../db/data/test-data/index')
-const seed = require("../db/seeds/seed")
+const seed = require("../db/seeds/seed");
+const { response } = require("../app.js");
 
 beforeEach(() => seed(testData));
 afterAll(() => {
@@ -29,7 +30,7 @@ describe("GET/api/categories", () => {
         });
     });
   });
-  describe("GET//api/reviews", ()=>{
+  describe("GET/api/reviews", ()=>{
     test('status:200, responds with an array of reviews objects has comment_count keys', () => {
       return request(app)
         .get('/api/reviews')
@@ -65,18 +66,61 @@ describe("GET/api/categories", () => {
         .then(({ body }) => {
           expect(body).toEqual({
             review_id: 2,
-            title: expect.any(String),
-            review_body: expect.any(String),
-            designer: expect.any(String),
-            review_img_url: expect.any(String),
-            votes: expect.any(Number),
-            category: expect.any(String),
+            title: 'Jenga',
+            review_body: 'Fiddly fun for all the family',
+            designer: 'Leslie Scott',
+            review_img_url: 'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png',
+            votes: 5,
+            category: 'dexterity',
             owner: "philippaclaire9",
-            created_at: expect.any(String),
+            created_at: '2021-01-18T10:01:41.251Z',
           });
         });
     });
   })
+
+  describe('GET /api/reviews/:review_id/comments',()=>{
+    test('status:200, responds with an array of comments objects for the given review_id',()=>{
+      return request(app)
+      .get('/api/reviews/2/comments')
+      .expect(200)
+      .then((response)=>{
+        const comments = response.body.comments
+        expect(comments ).toHaveLength(3); 
+        expect(comments).toBeSortedBy("comment_id", { descending: true })
+        comments.forEach((comment)=>{
+          expect.objectContaining({
+            comment_id:expect.any(Number),
+            votes: expect.any(String),
+            created_at:expect.any(String),
+            author:expect.any(String),
+            body: expect.any(String),
+            review_id:expect.any(String)
+          })
+        })
+      })
+    })
+  })
+ test('400:invalid comment_id',()=>{
+  return request(app)
+  .get('/api/reviews/orange/comments')
+  .expect(400)
+  .then((response)=>{
+    const msg = response.body.msg
+    expect(msg).toBe("bad request")
+  })
+ })
+ test('200: review_id is valid, but no existent',()=>{
+  return request(app)
+  .get('/api/reviews/100/comments')
+  .expect(200)
+  .then((response)=>{
+    
+    console.log(response.body, 'inside test')
+    expect(response.body.comments).toStrictEqual([])
+  })
+ })
+
   describe("error handling", ()=>{
     test("GET un existed path should return 404 not found",()=>{
       return request(app).get("/api/cats").expect(404).then((res)=>{
