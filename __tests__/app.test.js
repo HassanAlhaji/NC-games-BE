@@ -80,12 +80,11 @@ describe("GET/api/categories", () => {
   })
 
   describe('GET /api/reviews/:review_id/comments',()=>{
-    test.only('status:200, responds with an array of comments objects for the given review_id',()=>{
+    test('status:200, responds with an array of comments objects for the given review_id',()=>{
       return request(app)
       .get('/api/reviews/2/comments')
       .expect(200)
       .then((response)=>{
-        console.log(response.body, 'inside test');
         const comments = response.body.comments
         expect(comments ).toHaveLength(3); 
         expect(comments).toBeSortedBy("comment_id", { descending: true })
@@ -102,6 +101,26 @@ describe("GET/api/categories", () => {
       })
     })
   })
+ test('400:invalid comment_id',()=>{
+  return request(app)
+  .get('/api/reviews/orange/comments')
+  .expect(400)
+  .then((response)=>{
+    const msg = response.body.msg
+    expect(msg).toBe("bad request")
+  })
+ })
+ test('200: review_id is valid, but no existent',()=>{
+  return request(app)
+  .get('/api/reviews/100/comments')
+  .expect(200)
+  .then((response)=>{
+    
+    console.log(response.body, 'inside test')
+    expect(response.body.comments).toStrictEqual([])
+  })
+ })
+
   describe("error handling", ()=>{
     test("GET un existed path should return 404 not found",()=>{
       return request(app).get("/api/cats").expect(404).then((res)=>{
