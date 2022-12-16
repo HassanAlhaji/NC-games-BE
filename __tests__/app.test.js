@@ -140,7 +140,7 @@ describe("GET/api/categories", () => {
       })
  })
  
-      test.only('should Responds with the posted comment',()=>{
+      test('should Responds with the posted comment',()=>{
         const newComment = { username: 'philippaclaire9', body:'my new commnet'}
         return request(app)
         .post('/api/reviews/3/comments').send(newComment)
