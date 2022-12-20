@@ -5,7 +5,12 @@ const handel404PathError =(req, res, next)=>{
 const handelCustomErrors =(err, req, res, next)=>{
     if(err.status && err.msg){
         res.status(err.status).send({msg:err.msg})
-    }else{
+    }else if (err.code === "22P02"){
+       res.status(400).send({mgs:'bad request'})
+    }else if (err.code === '23502'){
+        res.status(404).send({msg:'not found'})
+    }
+    else {
         next(err)
     }
 }

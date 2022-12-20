@@ -101,7 +101,7 @@ describe("GET/api/categories", () => {
       })
     })
   })
- test('400:invalid comment_id',()=>{
+ test('400:invalid review_id',()=>{
   return request(app)
   .get('/api/reviews/orange/comments')
   .expect(400)
@@ -116,11 +116,48 @@ describe("GET/api/categories", () => {
   .expect(200)
   .then((response)=>{
     
-    console.log(response.body, 'inside test')
     expect(response.body.comments).toStrictEqual([])
   })
  })
 
+ describe('POST api/reviews/:review_id/comments',()=>{
+    test('400: not found', ()=>{
+      return request(app)
+      .post('/api/reviews/40/comments')
+      .expect(404)
+      .then((response)=>{
+        const msg = response.body.msg
+        expect(msg).toBe("not found")
+      })
+    })
+    test('400:invalid review_id',()=>{
+      return request(app)
+      .get('/api/reviews/orange/comments')
+      .expect(400)
+      .then((response)=>{
+        const msg = response.body.msg
+        expect(msg).toBe("bad request")
+      })
+ })
+ 
+      test('should Responds with the posted comment',()=>{
+        const newComment = { username: 'philippaclaire9', body:'my new commnet'}
+        return request(app)
+        .post('/api/reviews/3/comments').send(newComment)
+        .expect(201)
+        .then((response)=>{
+          const comment = response.body.comment
+          expect.objectContaining({
+            comment_id: 7,
+      body: 'my new commnet',
+      review_id: 3,
+      author: 'philippaclaire9',
+      votes: 0,
+      created_at: '2022-12-16T14:13:50.293Z'
+          })
+        })
+      })
+})
   describe("error handling", ()=>{
     test("GET un existed path should return 404 not found",()=>{
       return request(app).get("/api/cats").expect(404).then((res)=>{
