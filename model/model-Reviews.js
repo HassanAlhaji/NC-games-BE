@@ -1,5 +1,4 @@
 const db = require("../db/connection");
-
 exports.reviewExists = (reviewId) => {
   let query = "select exists(select 1 from reviews where review_id = $1)";
 
@@ -7,7 +6,6 @@ exports.reviewExists = (reviewId) => {
     return result.rows[0].exists;
   });
 };
-
 exports.fetchReviews = () => {
   return db
     .query(
@@ -18,7 +16,6 @@ exports.fetchReviews = () => {
       return result.rows;
     });
 };
-
 exports.fetchReviewById = (reviewId) => {
   if (isNaN(reviewId)) {
     return Promise.reject({
@@ -26,10 +23,15 @@ exports.fetchReviewById = (reviewId) => {
       status: 400,
     });
   }
-
   return db
     .query(`SELECT * FROM  reviews WHERE review_id = $1;`, [reviewId])
     .then((result) => {
       return result.rows[0];
     });
 };
+exports.patchRewview = (reviewId, incVotes)=>{
+    const query = `UPDATE reviews SET votes = votes + $1 WHERE review_id = $2 RETURNING *;`
+    return db.query(query, [incVotes, reviewId]).then(result =>{
+      return result.rows[0]
+    })
+}
