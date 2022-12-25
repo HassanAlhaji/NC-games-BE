@@ -263,6 +263,7 @@ describe("200: get user", () => {
     }))
   })
 })
+
 describe("error handling", () => {
   test("GET un existed path should return 404 not found", () => {
     return request(app)
