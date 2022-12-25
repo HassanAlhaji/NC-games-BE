@@ -39,7 +39,6 @@ describe("GET/api/reviews", () => {
         const reviews = response.body.reviews;
         expect(reviews).toBeInstanceOf(Array);
         expect(reviews).toHaveLength(13);
-        expect(reviews).toBeSortedBy("comment_count", { descending: true });
         reviews.forEach((reviews) => {
           expect(reviews).toEqual(
             expect.objectContaining({

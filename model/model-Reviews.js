@@ -11,7 +11,7 @@ exports.fetchReviews = (category, sort_by='created_at', order=' DESC') => {
   // LEFT JOIN comments ON reviews.review_id = comments.review_id WHERE reviews.category = strategy GROUP BY reviews.review_id ORDER BY comment_count DESC;`
   const validCategory = ['strategy', 'hidden-roles', 'dexterity', 'push-your-luck', 'roll-and-write', 'deck-building', 'engine-building', 'euro game','social deduction',"children's games" ]
   const values = []
-  const validOrders =['ASC', 'DESC']
+  const validOrders =['ASC', 'DESC', 'asc', 'desc']
   const validSorts = [
     "review_id",
     "title",
