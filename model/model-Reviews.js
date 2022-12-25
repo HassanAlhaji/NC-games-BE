@@ -24,7 +24,7 @@ exports.fetchReviews = (category, sort_by='created_at', order=' DESC') => {
     "votes",
     "comment_count",
   ];
-  console.log(category)
+
   let queryStr = `SELECT reviews.*, CAST(COUNT(comments.review_id) AS INT) AS comment_count FROM reviews
     LEFT JOIN comments ON reviews.review_id = comments.review_id`;
 
@@ -58,7 +58,10 @@ exports.fetchReviewById = (reviewId) => {
     });
   }
   return db
-    .query(`SELECT * FROM  reviews WHERE review_id = $1;`, [reviewId])
+    .query(`SELECT reviews.*, COUNT(comments.review_id) AS comment_count FROM reviews
+    LEFT Join comments on reviews.review_id = comments.review_id
+    WHERE reviews.review_id = $1
+    GROUP BY reviews.review_id;`, [reviewId])
     .then((result) => {
       return result.rows[0];
     });

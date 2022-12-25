@@ -74,6 +74,7 @@ describe("GET /api/reviews/:review_id", () => {
           category: "dexterity",
           owner: "philippaclaire9",
           created_at: "2021-01-18T10:01:41.251Z",
+          comment_count: "3"
         });
       });
   });
