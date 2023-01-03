@@ -263,6 +263,11 @@ describe("200: get user", () => {
     }))
   })
 })
+// describe('DELETE /api/comments/:comment_id', ()=>{
+//   test('delete the given comment by comment_id', ()=>{
+
+//   })
+// })
 
 describe("error handling", () => {
   test("GET un existed path should return 404 not found", () => {

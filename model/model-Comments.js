@@ -1,4 +1,5 @@
 const db = require('../db/connection')
+const comments = require('../db/data/test-data/comments')
 exports.fetchComments = (reviewId)=>{
     if(isNaN(reviewId)){
         return Promise.reject({
@@ -24,3 +25,11 @@ exports.createComment = (username, reviewId, body) => {
       return result.rows[0];
     })
 };
+exports.removCOmment =(comment_id)=>{
+
+  return db.query(`DELETE FROM comments WHERE comment_id =$1 RETURNING *;`,[comment_id]).then(result =>{
+    return result.rows[0]
+  })
+
+
+}

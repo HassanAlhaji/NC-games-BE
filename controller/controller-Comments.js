@@ -1,4 +1,4 @@
-const { fetchComments , createComment} = require("../model/model-Comments")
+const { fetchComments , createComment, removCOmment} = require("../model/model-Comments")
 const {
   fetchReviewById,
   reviewExists,
@@ -28,3 +28,13 @@ exports.postComment = (req, res, next) => {
           next(error);
         });
 };
+
+exports.deleteComment =(req, res, next)=>{
+const {comment_id} = req.params
+removCOmment(comment_id).then(comment=>{
+  console.log(comment);
+  res.status(204).send(comment)
+
+})
+
+}
